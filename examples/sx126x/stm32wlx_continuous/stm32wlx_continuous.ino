@@ -7,6 +7,17 @@
 // In order to use the Arduino IDE to program the Wio-E5, you must
 // install the stm32duino package using these instructions:
 //   https://community.st.com/t5/stm32-mcus/stm32-arduino-stm32duino-tutorial/ta-p/49649
+// Install STM32CubeProgrammer from https://www.st.com/en/development-tools/stm32cubeprog.html
+// Connect the STLINK V2 to the Wio-E5 mini board:
+//    STLINK                   Wio-E
+//     3.3V  Red               3.3V
+//     GND   Black             GND
+//     SWCLK Brown             CLK
+//     SDIO  ORange            CIO
+// Plug the STLINK into a USB port
+// Run ~/STMicroelectronics/STM32Cube/STM32CubeProgrammer/bin/STM32CubeProgrammer
+// select the STLINK and press Connect: should get a connection to the Wio-E5 mini
+//
 // Tested with Wio-E5 mini. In Arduino, select:
 //   Tools -> Board -> STM32 MCU based boards -> LoRa boards
 //   Tools -> Board part number -> LoRa-E5 mini

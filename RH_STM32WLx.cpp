@@ -63,7 +63,7 @@ bool RH_STM32WLx::init()
 {
     bool ret = RH_SX126x::init(); // In STDBY mode after this
     
-    setDIO2AsRfSwitchCtrl(false); // Dont use DIO2 as RF control for Wio-E5, which uses separate pins  FIXME: not correct for NICERF
+    setDIO2AsRfSwitchCtrl(false); // Dont use DIO2 as RF control for Wio-E5, which uses separate pins
     setTCXO(1.7, 5000); // MUST do this (in standby mode) else get no output. volts, us
     return ret;
 }

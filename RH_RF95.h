@@ -296,7 +296,8 @@
 /// to 251 octets on any frequency supported by the radio, in a range of
 /// predefined Bandwidths, Spreading Factors and Coding Rates.  Frequency can be set with
 /// 61Hz precision to any frequency from 240.0MHz to 960.0MHz. Caution: most modules only support a more limited
-/// range of frequencies due to antenna tuning.
+/// range of frequencies due to antenna tuning. Caution: Spreading Factor 6 is incompatible with this modules use of explicit
+/// headers, and cannot be used. See Datasheet section 4.1.1.2.
 ///
 /// Up to 2 modules can be connected to an Arduino (3 on a Mega),
 /// permitting the construction of translators and frequency changers, etc.
@@ -791,7 +792,8 @@ public:
     /// valid values are 6 through 12.
     /// Out of range values below 6 are clamped to 6
     /// Out of range values above 12 are clamped to 12
-    /// See Semtech DS SX1276/77/78/79 page 27 regarding SF6 configuration.
+    /// See Semtech DS SX1276/77/78/79 page 27 section 4.1.1.2 regarding SF6 configuration,
+    /// which is incompatible with RH_RF95's use of explicit headers.
     ///
     /// \param[in] uint8_t sf (spreading factor 6..12)
     /// \return nothing

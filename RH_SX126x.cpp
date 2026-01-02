@@ -30,6 +30,7 @@ PROGMEM static const RH_SX126x::ModemConfig MODEM_CONFIG_TABLE[] =
     { RH_SX126x::PacketTypeLoRa, RH_SX126x_LORA_SF_128, RH_SX126x_LORA_BW_500_0, RH_SX126x_LORA_CR_4_5, RH_SX126x_LORA_LOW_DATA_RATE_OPTIMIZE_OFF, 0, 0, 0, 0},
 
     // LoRa_Bw31_25Cr48Sf512 no interop with RH_RF95 WHY????
+    // Not supported by LLCC68
     { RH_SX126x::PacketTypeLoRa, RH_SX126x_LORA_SF_512, RH_SX126x_LORA_BW_31_25, RH_SX126x_LORA_CR_4_8, RH_SX126x_LORA_LOW_DATA_RATE_OPTIMIZE_ON, 0, 0, 0, 0},
 
     // LoRa_Bw125Cr48Sf4096 Works with RH_RF95
@@ -106,7 +107,10 @@ bool RH_SX126x::init()
 
     // You may need to change these after init to suit your radio and its wiring:
     setDIO2AsRfSwitchCtrl(true); // Use the radios DIO2 pin control the transmitter. This is common in 3rd party RF modules
-    setTCXO(3.3, 100); // Enable the TCXO. Typical values for the control voltage and delay
+
+    // No: not all modules have a TCXO and this call prevents such a radio working
+    // Removed on 2026-01-01, and you now must call it yourself if needed
+//    setTCXO(3.3, 100); // Enable the TCXO. Typical values for the control voltage and delay
 
     // These are the interrupts we are willing to process
     setDioIrqParams(_irqMask, _irqMask, RH_SX126x_IRQ_NONE, RH_SX126x_IRQ_NONE);
@@ -589,9 +593,9 @@ bool RH_SX126x::sendCommand(uint8_t command, uint8_t data[], uint8_t len)
     Serial.println("");
 #endif
 
+    waitUntilNotBusy();
     ATOMIC_BLOCK_START;
     beginTransaction();
-    waitUntilNotBusy();
     _spi.transfer(command);
     for (uint8_t i = 0; i < len; i++)
         _spi.transfer(data[i]);
@@ -610,9 +614,9 @@ bool RH_SX126x::sendCommand(uint8_t command, uint8_t value)
 
 bool RH_SX126x::sendCommand(uint8_t command)
 {
+    waitUntilNotBusy();
     ATOMIC_BLOCK_START;
     beginTransaction();
-    waitUntilNotBusy();
     _spi.transfer(command);
     endTransaction();
     ATOMIC_BLOCK_END;
@@ -621,9 +625,9 @@ bool RH_SX126x::sendCommand(uint8_t command)
 
 bool RH_SX126x::getCommand(uint8_t command, uint8_t data[], uint8_t len)
 { 
+    waitUntilNotBusy();
     ATOMIC_BLOCK_START;
     beginTransaction();
-    waitUntilNotBusy();
     _spi.transfer(command);
     _spi.transfer(0); // Wait for data
     for (uint8_t i = 0; i < len; i++)
@@ -635,9 +639,9 @@ bool RH_SX126x::getCommand(uint8_t command, uint8_t data[], uint8_t len)
 
 bool RH_SX126x::readRegisters(uint16_t address, uint8_t data[], uint8_t len)
 {
+    waitUntilNotBusy();
     ATOMIC_BLOCK_START;
     beginTransaction();
-    waitUntilNotBusy();
     _spi.transfer(RH_SX126x_CMD_READ_REGISTER);
     _spi.transfer(static_cast<uint8_t>(address >> 8));
     _spi.transfer(static_cast<uint8_t>(address));
@@ -671,9 +675,9 @@ bool RH_SX126x::writeRegisters(uint16_t address, uint8_t data[], uint8_t len)
     Serial.println("");
 #endif
     
+    waitUntilNotBusy();
     ATOMIC_BLOCK_START;
     beginTransaction();
-    waitUntilNotBusy();
     _spi.transfer(RH_SX126x_CMD_WRITE_REGISTER);
     _spi.transfer(static_cast<uint8_t>(address >> 8));
     _spi.transfer(static_cast<uint8_t>(address));
@@ -694,9 +698,9 @@ bool RH_SX126x::writeRegister(uint16_t address, uint8_t data)
 bool RH_SX126x::writeBuffer(uint8_t offset, const uint8_t data[], uint8_t len)
 {
     // A bit different to sendCommand because of offset
+    waitUntilNotBusy();
     ATOMIC_BLOCK_START;
     beginTransaction();
-    waitUntilNotBusy();
     _spi.transfer(RH_SX126x_CMD_WRITE_BUFFER);
     _spi.transfer(offset);
     for (uint8_t i = 0; i < len; i++)
@@ -714,9 +718,9 @@ bool RH_SX126x::writeBuffer(uint8_t offset, const char* text)
 bool RH_SX126x::readBuffer(uint8_t offset, uint8_t data[], uint8_t len)
 {
     // This is a bit different from getCommand, because of offset
+    waitUntilNotBusy();
     ATOMIC_BLOCK_START;
     beginTransaction();
-    waitUntilNotBusy();
     _spi.transfer(RH_SX126x_CMD_READ_BUFFER);
     _spi.transfer(offset);
     _spi.transfer(RH_SX126x_CMD_NOP); // Wait for data

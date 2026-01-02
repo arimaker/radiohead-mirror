@@ -12,7 +12,7 @@ via a variety of common data radios and other transports on a range of embedded 
 \par Download
 
 The version of the package that this documentation refers to can be downloaded 
-from https://www.airspayce.com/mikem/arduino/RadioHead/RadioHead-1.143.zip
+from https://www.airspayce.com/mikem/arduino/RadioHead/RadioHead-1.144.zip
 
 You can always find the latest version of this documentation at
 https://www.airspayce.com/mikem/arduino/RadioHead
@@ -140,10 +140,13 @@ This chip and GrumpyOldPizza Arduino Core for STM32L0 are now supported by Platf
 https://docs.platformio.org/en/latest/platforms/ststm32.html#arduino-stm32l0-configuration-system
 
 - RH_SX126x
-Works with Semtech SX1261/2/8 LoRa capable transceivers.
-Can be confgigured to automatically controls any digital output pins required to control external RF switches or amplifiers.
+Works with Semtech SX1261/2/8 LoRa capable transceivers and compatible, such as LLCCC68
+Can be configured to automatically control any digital output pins required to control external
+RF switches or amplifiers.
 Tested with NiceRF LoRa1268-915 and Teensy 3.1.
 https://www.nicerf.com/lora-module/915mhz-lora-module-lora1262.html
+Tested with LLCC68 in Ra-01SC module and Teensy 3.1.
+Tested with Heltec Cube Cell HTCC-AB01 and Teensy 3.1.
 
 - RH_STM32WLx
 Works with STM32WLE5xx and STM32WLE4xx family processors that include a SX1261/2 multi power amplifier transceiver.
@@ -1309,6 +1312,18 @@ k             Fix SPI bus speed errors on 8MHz Arduinos.
 \version 1.143 2025-01-21
              Extended Cube Cell Board support to all Cube Cell board variants currently supported by Cube Cell 1.5.0.
 
+\version 1.144 2026-01-02
+             Removed some leftover test code from RH_RF69.
+	     Fixed typos in RH_RF24.h
+	     Added RSSItodBm() to RH_RF24
+	     Tested RH_SX126x driver with LLCC68 (almost identical to SX1262) in Ra-01SC module. This required
+	     a incompatible update to RH_SX126x: The Ra-01SC does not have a TCXO, but RH_SX126x always
+	     configured a TCXO: which prevents it working with radio modules without a TCXO. The call in init() to
+	     setTCXO(3.3, 100) has been removed. Now if you have a TCXO, you _must_ make the call to setTCXO()
+	     yourself after init() returns.
+	     Some changes to RH_SX126x to ensure waitUntilNotBusy() is not called inside
+	     an ATOMIC_BLOCK as it is thought this might interfere with timekeeping on some systems with FreeRTOS.
+	     Updated documentation and examples to suit LLCC68
 
 \author  Mike McCauley. DO NOT CONTACT THE AUTHOR DIRECTLY. USE THE GOOGLE GROUP GIVEN ABOVE
 */
@@ -1557,7 +1572,7 @@ these examples and explanations and extend them to suit your needs.
 
 // Official version numbers are maintained automatically by Makefile:
 #define RH_VERSION_MAJOR 1
-#define RH_VERSION_MINOR 143
+#define RH_VERSION_MINOR 144
 
 // Symbolic names for currently supported platform types
 #define RH_PLATFORM_ARDUINO          1

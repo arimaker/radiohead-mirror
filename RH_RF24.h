@@ -599,9 +599,9 @@
 /// Silicon Labs Wireless Development Suite (WDS) program and \#included by RH_RF24.cpp
 /// 
 /// The library will work out of the box and without further configuring with these parameters:
-/// - Si4464 or equvalent
-/// - 30MHz Crytstal
-/// - 434MHz base frequncy band
+/// - Si4464 or equivalent
+/// - 30MHz Crystal
+/// - 434MHz base frequency band
 /// - 2GFSK modulation
 /// - 5kbps data rate
 /// - 10kHz deviation
@@ -624,10 +624,10 @@
 /// - Select Radio Configuration Application, press Select Application
 /// - Click on Standard Packet Tx
 /// - On the Frequency and Power tab, Select the Frequency, crystal frequency etc. The PA power level is irrelevant, 
-///   since power is set programatically 
+///   since power is set programatically in RadioHead
 /// - On the RF parameters tab, select the modulation type and rates
 /// - Press Generate Source, Save custom radio configuration header file
-/// - Enter a new unique file name in the RF24configs folder in RadioHead
+/// - Enter a new unique file name in the RF24configs folder in your RadioHead
 /// - Edit RH_RF24.cpp to use this new header file
 /// - Recompile RH_RF24
 /// 
@@ -643,6 +643,10 @@
 /// \endcode
 /// The units of RSSI are arbitrary and relative, with larger unsigned numbers indicating a stronger signal. Values up to 255
 /// are seen with radios in close proximity to each other. Lower limit of receivable strength is about 70.
+///
+/// The raw RSSI can be converted to dBm with:
+///     RSSI (dBm) = (RSSI_value / 2) – RSSIcal
+/// where RSSICal depends on your hardware but which is typically about 130 (dBm)
 ///
 /// \par Transmitter Power
 ///
@@ -1057,6 +1061,15 @@ public:
     /// connected.
     /// \return The integer device type
     uint16_t deviceType() {return _deviceType;};
+
+    /// Convert the RSSI to dBm
+    /// An accurate figure depends on a calibration constant that depends on
+    /// your actual hardware, but which is typically about 134 (dBm)
+    /// See https://www.eevblog.com/forum/rf-microwave/how-to-get-the-rssi-calibration-constant-for-a-si4463/
+    /// \param[in] RSSI the raw RSSI from lastRssi()
+    /// \param[in] RSSIcal calibration constant for your hardware
+    /// \return The corrected RSSI of the last packet in dBm
+    int16_t RSSItodBm(uint8_t RSSI, uint16_t RSSIcal = 134);
 
 protected:
     /// This is a low level function to handle the interrupts for one instance of RF24.

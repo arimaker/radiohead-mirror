@@ -5,6 +5,7 @@
 // It is designed to work with the examples sx1262_server and sx1262_server.
 // Tested with G-Nice LoRa1262-915 and Teensy 3.1
 // also Heltec Cube Cell HTCC-AB01
+// Also Ra-01SC/LLCC68 and Teensy 3.1
 
 #include <RH_SX126x.h>
 
@@ -25,8 +26,16 @@ void setup()
   // Defaults after init are 915.0MHz, 13dBm, Bw = 125 kHz, Cr = 4/5, Sf = 128chips/symbol, CRC on (LoRa_Bw125Cr45Sf128)
   // You can change the frequency:
   //driver.setFrequency(868.0);
+  //driver.setFrequency(434.0);
+
+  // If your module has a TCXO, you will probably need to make a call like this to enable it: 
+  // Required for Heltec Cube Cell. Not for Ra-01SC
+  //driver.setTCXO(3.3, 100); // Enable the TCXO. Typical values for the control voltage and delay
 
   // You can change the modulation parameters with eg
+  //driver.setModemConfig(RH_SX126x::LoRa_Bw125Cr45Sf2048);
+  //driver.setModemConfig(RH_SX126x::LoRa_Bw500Cr45Sf128);
+  //driver.setModemConfig(RH_SX126x::LoRa_Bw31_25Cr48Sf512); // Not on LLCC68
   //driver.setModemConfig(RH_SX126x::LoRa_Bw125Cr45Sf2048);
   
   // You can change the power level in dBm

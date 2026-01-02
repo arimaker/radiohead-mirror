@@ -560,9 +560,11 @@
 /////////////////////////////////////////////////////////////////////
 /*! \class RH_SX126x RH_SX126x.h <RH_SX126x.h>
 \brief Driver to send and receive unaddressed, unreliable datagrams via a
-Semtech SX126X family LoRa capable radio transceiver.
+Semtech SX126X family LoRa capable radio transceivers, and compatible radios like the LLCC68
 
-Works with NiceRF LoRa1262-915 and Teensy 3.1. Will probably work with any other SX1262 module.
+Works with NiceRF LoRa1262-915 and Teensy 3.1. Also with LLCC68 in Ra-01SC module and Teensy 3.1.
+Also with Heltec Cube Cell HTCC-AB01 and Teensy 3.1.
+Will probably work with any other SX1262 module.
 
 \par Overview
 
@@ -578,7 +580,7 @@ modulation scheme.
 Predefined modulation schemes are available for various LoRa
 modulation speeds and bandwidths. GFSK modulation is also supported.
 
-The SX126x family of radio chips are availabel as discrete comonents with an SPI interface.
+The SX126x family of radio chips are available as discrete components with an SPI interface.
 In some hardware (eg the STM32WLE5xx STM32WLE4xx processors) the radio
 is built into a microprocessor.
 
@@ -618,7 +620,7 @@ programs that use the RH_SX126x driver.
 
 \par Compatibility with RH_RF95
 
-The predefined modulation schemes have been show to interoperate with
+The predefined modulation schemes have been shown to interoperate with
 the RH_RF95 driver with similarly named modulation schemes.
 
 For example the (default) RH_SX126x::LoRa_Bw125Cr45Sf128 is compatible
@@ -671,6 +673,11 @@ SX126x compatible chips are available in at least 4 types:
 
 -STM32WLE5JC has 2 PAs, low power (-17 to +15 dBm) and high power (-9 to +22 dBm).
 
+-LLCC68 is almost identical to SX1262/SX1268 except that some spreading factors and bandwidths
+ are not supported.
+ see https://docs.ai-thinker.com/en/Ra-01SC/index.html and
+ https://aithinker-static.oss-cn-shenzhen.aliyuncs.com/docs/_media_old/ra-01sc_specification.pdf
+
 Even if the radio has 2 PAs, depending on your radio module, maybe
 only one is connected. It also includes a dedicated SPI interface for
 the radio plus some internllay connected reset and interrupt pins
@@ -718,12 +725,13 @@ No range tests have yet been conducted.
 
 Note, if you are using a STM32WLE5JC, see the intructions for that in RH_STM32WLx.h
 
-Connecting a NiceRF LoRa1262-915 to a Teensy 3.1:
+\par Connecting a NiceRF LoRa1262-915 to a Teensy 3.1:
 
 https://www.nicerf.com/lora-module/915mhz-lora-module-lora1262.html
 
 We got one on a breakout board
-which already has a small helical antenna connected. The module appears to contain a 3.3V TCXO, nd an antenna switch connected to DIO2
+which already has a small helical antenna connected.
+The module appears to contain a 3.3V TCXO, and an antenna switch connected to DIO2
 You should be able to use a
 similar pinout for any 3.3V Arduino compatible board.
 
@@ -754,7 +762,14 @@ RH_SX126x driver(42, 47, 46, 38); // NSS, DIO1, BUSY, NRESET
 \endcode
 
 
+\par Connecting an Ra-01SC module containing a LLCC68 radio
 
+This module from AI-Thinker has an LLCC68 chip and an antenna switch connected to DIO2.
+It does not have a TCXO, just a conventional crystal.
+Use the same connections and constructor as for the  NiceRF LoRa1262-915 above.
+
+The LLCC68 is almost identical to the SX1262/SX1268 except that some spreading factors and bandwidths
+are not supported.
 
 
 */
@@ -1042,6 +1057,11 @@ public:
     /// Returns the frequency error from the last received packet
     float getFrequencyError();    
 
+    /// Set the voltage to use for the TCXO oven
+    /// and enable the TCXO. Do not call this unless you actually have a TCXO,
+    /// otherwise the radio will not work correctly.
+    bool setTCXO(float voltage, uint32_t delay);
+
 protected:
 
     ///////////////////////////////////////////////////////////////////
@@ -1127,9 +1147,6 @@ protected:
     /// Configures the radio to use an external temperature controlled crystal oscillator (TCXO) and the oven voltage to use.
     /// For low level internal use only
     bool setDIO3AsTcxoCtrl(uint8_t voltage, uint32_t delay);
-
-    /// Set the voltage to use for the TCXO oven
-    bool setTCXO(float voltage, uint32_t delay);
 
     /// Low level function to set the radio packet confiuration
     bool setPacketParams(uint8_t p1, uint8_t p2, uint8_t p3, uint8_t p4, uint8_t p5, uint8_t p6, uint8_t p7, uint8_t p8, uint8_t p9);

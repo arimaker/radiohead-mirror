@@ -139,7 +139,7 @@ list', then 'Open in update mode'
 Good! The STM32WLE5JC firmware can now be written and read as we need (note
 that the factory supplied LoRaWan firmware has now been erased), by
 either STM32CubeProgrammer or Arduino IDE (2.1.1 or later) via the
-STLink/V2, so leave it connected
+STLink/V2, so leave it connected, but you can close STM32CubeProgrammer.
 
 In order to use the Arduino IDE to program the Wio-E5, you must
 install the stm32duino package using these instructions:
@@ -152,7 +152,7 @@ Tools -> Board -> STM32 MCU based boards -> LoRa boards
 Tools -> Board part number -> LoRa-E5 mini
 Tools -> U(S)ART support -> Enabled (generic Serial)
 You will then be able to edit and upload directly from Arduino IDE through the STLink/V2
-You can connect the Wio-E5 USB-C to your hosts USB port and use
+You can use a cable to connect the Wio-E5 USB-C to your hosts USB port and use
 Arduino IDE to monitor the serial output to Serial
 (Note: programming does not occur over the USB connection).
 

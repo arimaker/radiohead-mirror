@@ -785,6 +785,11 @@ uint8_t RH_RF24::frr_read(uint8_t reg)
     return ret;
 }
 
+int16_t RH_RF24::RSSItodBm(uint8_t RSSI, uint16_t RSSIcal)
+{
+    return ((int)RSSI / 2) - (int)RSSIcal;
+}
+    
 // List of command replies to be printed by prinRegisters()
 PROGMEM static const RH_RF24::CommandInfo commands[] =
 {
