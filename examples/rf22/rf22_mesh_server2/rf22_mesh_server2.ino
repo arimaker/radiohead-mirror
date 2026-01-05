@@ -8,7 +8,8 @@
 
 // Mesh has much greater memory requirements, and you may need to limit the
 // max message length to prevent wierd crashes
-#define RH_MESH_MAX_MESSAGE_LEN 50
+#define MAX_MESSAGE_LEN RH_MESH_MAX_MESSAGE_LEN
+//#define MAX_MESSAGE_LEN 50
 
 #include <RHMesh.h>
 #include <RH_RF22.h>
@@ -36,7 +37,7 @@ void setup()
 
 uint8_t data[] = "And hello back to you from server2";
 // Dont put this on the stack:
-uint8_t buf[RH_MESH_MAX_MESSAGE_LEN];
+uint8_t buf[MAX_MESSAGE_LEN];
 void loop()
 {
   uint8_t len = sizeof(buf);

@@ -230,12 +230,16 @@ uint8_t RHRouter::route(RoutedMessage* message, uint8_t messageLen)
     {
 	RoutingTableEntry* route = getRouteTo(message->header.dest);
 	if (!route)
+	{
 	    return RH_ROUTER_ERROR_NO_ROUTE;
+	}
 	next_hop = route->next_hop;
     }
 
     if (!RHReliableDatagram::sendtoWait((uint8_t*)message, messageLen, next_hop))
+    {
 	return RH_ROUTER_ERROR_UNABLE_TO_DELIVER;
+    }
 
     return RH_ROUTER_ERROR_NONE;
 }

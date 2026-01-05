@@ -244,30 +244,30 @@ void RH_SX126x::handleInterrupt()
 	    _lastSNR = 0; // Unobtainable
 	}
 	
-	validateRxBuf(); 
-	if (_rxBufValid)
-	    setModeIdle(); // Got one 
+	validateRxBuf();
+	// Radio is now idle by virtue of setRxFallbackMode()
+	_mode = RHModeIdle;
     }
     else if (_mode == RHModeTx && (interrupts & RH_SX126x_IRQ_TX_DONE))
     {
 	// TxDone
 	// Should now be in STDBY
 	_txGood++;
-	setModeIdle();
+	_mode = RHModeIdle;
     }
     else if (_mode == RHModeCad && (interrupts & RH_SX126x_IRQ_CAD_DONE))
     {
 //	Serial.println("caddone");
 	// CadDone
 	// Should now be in STDBY_RX
-	setModeIdle();
+	_mode = RHModeIdle;
     }
     else if (_mode == RHModeCad && (interrupts & RH_SX126x_IRQ_CAD_DETECTED))
     {
 	// CadDetected: there was activity
 //	Serial.println("caddetected");
 	_cad = true;
-	setModeIdle();
+	_mode = RHModeIdle;
     }
     RH_MUTEX_UNLOCK(lock); 
 }

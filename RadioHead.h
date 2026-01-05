@@ -12,7 +12,7 @@ via a variety of common data radios and other transports on a range of embedded 
 \par Download
 
 The version of the package that this documentation refers to can be downloaded 
-from https://www.airspayce.com/mikem/arduino/RadioHead/RadioHead-1.144.zip
+from https://www.airspayce.com/mikem/arduino/RadioHead/RadioHead-1.145.zip
 
 You can always find the latest version of this documentation at
 https://www.airspayce.com/mikem/arduino/RadioHead
@@ -1325,6 +1325,9 @@ k             Fix SPI bus speed errors on 8MHz Arduinos.
 	     an ATOMIC_BLOCK as it is thought this might interfere with timekeeping on some systems with FreeRTOS.
 	     Updated documentation and examples to suit LLCC68
 
+\version 1.145 2026-01-05
+             Fixed a bug in RH_SX126x driver where receipt of an invalid message would prevent further messages being received.<br>
+	     
 \author  Mike McCauley. DO NOT CONTACT THE AUTHOR DIRECTLY. USE THE GOOGLE GROUP GIVEN ABOVE
 */
 
@@ -1572,7 +1575,7 @@ these examples and explanations and extend them to suit your needs.
 
 // Official version numbers are maintained automatically by Makefile:
 #define RH_VERSION_MAJOR 1
-#define RH_VERSION_MINOR 144
+#define RH_VERSION_MINOR 145
 
 // Symbolic names for currently supported platform types
 #define RH_PLATFORM_ARDUINO          1

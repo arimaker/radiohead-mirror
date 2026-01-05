@@ -37,7 +37,9 @@ uint8_t RHMesh::sendtoWait(uint8_t* buf, uint8_t len, uint8_t address, uint8_t f
     {
 	RoutingTableEntry* route = getRouteTo(address);
 	if (!route && !doArp(address))
+	{
 	    return RH_ROUTER_ERROR_NO_ROUTE;
+	}
     }
 
     // Now have a route. Contruct an application layer message and send it via that route
@@ -58,7 +60,9 @@ bool RHMesh::doArp(uint8_t address)
     p->dest = address; // Who we are looking for
     uint8_t error = RHRouter::sendtoWait((uint8_t*)p, sizeof(RHMesh::MeshMessageHeader) + 2, RH_BROADCAST_ADDRESS);
     if (error !=  RH_ROUTER_ERROR_NONE)
+    {
 	return false;
+    }
     
     // Wait for a reply, which will be unicast back to us
     // It will contain the complete route to the destination
@@ -160,6 +164,7 @@ bool RHMesh::recvfromAck(uint8_t* buf, uint8_t* len, uint8_t* source, uint8_t* d
     uint8_t _id;
     uint8_t _flags;
     uint8_t _hops;
+    
     if (RHRouter::recvfromAck(_tmpMessage, &tmpMessageLen, &_source, &_dest, &_id, &_flags, &_hops))
     {
 	MeshMessageHeader* p = (MeshMessageHeader*)&_tmpMessage;
@@ -199,7 +204,6 @@ bool RHMesh::recvfromAck(uint8_t* buf, uint8_t* len, uint8_t* source, uint8_t* d
 		if (d->route[i] == _thisAddress)
 		    return false; // Already been through us. Discard
 	    
-	        
             addRouteTo(_source, headerFrom()); // The originator needs to be added regardless of node type
 
 	    // Hasnt been past us yet, record routes back to the earlier nodes
@@ -207,7 +211,9 @@ bool RHMesh::recvfromAck(uint8_t* buf, uint8_t* len, uint8_t* source, uint8_t* d
             if (_isa_router)
             {
 	        for (i = 0; i < numRoutes; i++)
+		{
 		    addRouteTo(d->route[i], headerFrom());
+		}
             }
 
 	    if (isPhysicalAddress(&d->dest, d->destlen))

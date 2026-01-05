@@ -68,7 +68,6 @@ bool RHReliableDatagram::sendtoWait(uint8_t* buf, uint8_t len, uint8_t address)
             headerFlagsToSet = RH_FLAGS_RETRY;
         }
         setHeaderFlags(headerFlagsToSet, headerFlagsToClear);
-
 	sendto(buf, len, address);
 	waitPacketSent();
 
@@ -93,6 +92,7 @@ bool RHReliableDatagram::sendtoWait(uint8_t* buf, uint8_t len, uint8_t address)
 	{
 	    if (waitAvailableTimeout(timeLeft))
 	    {
+		
 		uint8_t from, to, id, flags;
 		if (recvfrom(0, 0, &from, &to, &id, &flags)) // Discards the message
 		{
@@ -109,6 +109,7 @@ bool RHReliableDatagram::sendtoWait(uint8_t* buf, uint8_t len, uint8_t address)
 				&& (id == _seenIds[from]))
 		    {
 			// This is a request we have already received. ACK it again
+			
 			acknowledge(id, from);
 		    }
 		    // Else discard it
@@ -137,9 +138,11 @@ bool RHReliableDatagram::recvfromAck(uint8_t* buf, uint8_t* len, uint8_t* from, 
 	// Never ACK an ACK
 	if (!(_flags & RH_FLAGS_ACK))
 	{
+	    
 	    // Its a normal message not an ACK
 	    if (_to ==_thisAddress)
 	    {
+
 		// In some networks with mixed processor speeds, may need to delay
 		// the ack with a define in say platformio.ini:
 		#if defined(RH_ACK_DELAY)
@@ -153,6 +156,7 @@ bool RHReliableDatagram::recvfromAck(uint8_t* buf, uint8_t* len, uint8_t* from, 
 		// Its not a broadcast, so ACK it
 		// Acknowledge message with ACK set in flags and ID set to received ID
 		acknowledge(_id, _from);
+		
 	    }
             // Filter out retried messages that we have seen before. This explicitly
             // only filters out messages that are marked as retries to protect against

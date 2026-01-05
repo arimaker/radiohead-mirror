@@ -5,8 +5,8 @@
 > by Mike McCauley / AirSpayce Pty Ltd. It is not the official repository: please report issues and
 > send patches upstream as described below.
 >
-> This commit contains **RadioHead 1.144** (released 2026-01-02), imported unmodified from
-> <https://www.airspayce.com/mikem/arduino/RadioHead/RadioHead-1.144.zip>. Each release is a commit tagged `vX.Y`; the repository is updated
+> This commit contains **RadioHead 1.145** (released 2026-01-05), imported unmodified from
+> <https://www.airspayce.com/mikem/arduino/RadioHead/RadioHead-1.145.zip>. Each release is a commit tagged `vX.Y`; the repository is updated
 > automatically by `update_mirror.py`.
 >
 > RadioHead is dual licensed: GPL-3 (see `LICENSE` and the full text in `COPYING`) or a commercial
