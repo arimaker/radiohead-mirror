@@ -40,6 +40,14 @@ typedef unsigned char byte;
 //  #define OUTPUT BCM2835_GPIO_FSEL_OUTP
 //#endif
 
+#ifndef constrain
+#define constrain(amt,low,high) ((amt)<(low)?(low):((amt)>(high)?(high):(amt)))
+#endif
+
+#ifndef digitalRead
+#define digitalRead(pin) gpioRead(pin)
+#endif
+
 class SPIClass
 {
   public:
@@ -153,7 +161,9 @@ void digitalWrite(unsigned char pin, unsigned char value);
 
 unsigned long millis();
 
-void delay (unsigned long delay);
+void delay (unsigned long ms);
+
+void delayMicroseconds (unsigned long us);
 
 long random(long min, long max);
 

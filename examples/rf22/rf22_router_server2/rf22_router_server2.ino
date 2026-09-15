@@ -3,6 +3,7 @@
 // Example sketch showing how to create a simple addressed, routed reliable messaging server
 // with the RHRouter class.
 // It is designed to work with the other example rf22_router_client
+// CLIENT_ADDRESS <-> SERVER1_ADDRESS <-> SERVER2_ADDRESS<->SERVER3_ADDRESS
 
 #include <RHRouter.h>
 #include <RH_RF22.h>
@@ -31,9 +32,10 @@ void setup()
   // Defaults after init are 434.0MHz, 0.05MHz AFC pull-in, modulation FSK_Rb2_4Fd36
   
   // Manually define the routes for this network
-  manager.addRouteTo(CLIENT_ADDRESS, CLIENT_ADDRESS);  
-  manager.addRouteTo(SERVER2_ADDRESS, SERVER2_ADDRESS);
-  manager.addRouteTo(SERVER3_ADDRESS, SERVER2_ADDRESS);
+  manager.addRouteTo(CLIENT_ADDRESS, SERVER1_ADDRESS);  
+  manager.addRouteTo(SERVER1_ADDRESS, SERVER1_ADDRESS);
+  manager.addRouteTo(SERVER3_ADDRESS, SERVER3_ADDRESS);
+
 }
 
 uint8_t data[] = "And hello back to you from server2";

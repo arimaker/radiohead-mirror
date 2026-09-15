@@ -20,6 +20,10 @@
 // Most Arduinos can handle 2, Megas can handle more
 #define RH_SX126x_NUM_INTERRUPTS 3
 
+// This default time in us to wait for the busy pin to become inactive. Max value is 255 us.
+// For uC (barebone/rtos) 10 us seems to suffice. RPI (non-rtos with pigpio) needs around 70.
+#define RH_SX126x_BUSY_TIMEOUT_DEFAULT 10
+
 // Max number of octets the LORA Rx/Tx FIFO can hold
 #define RH_SX126x_FIFO_SIZE 255
 
@@ -897,12 +901,15 @@ public:
     ///                Defaults to the standard Arduino hardware SPI interface
     RH_SX126x(uint8_t slaveSelectPin = SS, uint8_t interruptPin = 2, uint8_t busyPin = RH_INVALID_PIN, uint8_t resetPin = RH_INVALID_PIN,
 	      RHGenericSPI& spi = hardware_spi, RadioPinConfig* radioPinConfig = NULL);
-    
+ 
     /// Initialise the Driver transport hardware and software.
     /// Leaves the radio in idle mode,
     /// with default configuration of: 915.0MHz, 13dBm, Bw = 125 kHz, Cr = 4/5, Sf = 128chips/symbol, CRC on
+    /// \param[in] hw_reset Determines whether the spi bus as well has the SX126x is to be reset on init
+    //  Should multiple SX126x share the same SPI bus and hardware reset line, the reset sequence only needs 
+    //  to be executed once during the initialization of the first instance.
     /// \return true if initialisation succeeded.
-    virtual bool    init();
+    virtual bool    init(bool hw_reset = true);
 
     /// Prints the value of selected radio chip registers
     /// to the Serial device if RH_HAVE_SERIAL is defined for the current platform
@@ -1061,6 +1068,9 @@ public:
     /// and enable the TCXO. Do not call this unless you actually have a TCXO,
     /// otherwise the radio will not work correctly.
     bool setTCXO(float voltage, uint32_t delay);
+
+    // Set timeout in us until the busy pin to become inactive
+    void setBusyTimeout(uint8_t timeout);
 
 protected:
 
@@ -1287,6 +1297,9 @@ private:
 
     /// Pin number of the radio BUSY pin, if available, else RH_INVALID_PIN
     uint8_t             _busyPin;
+
+    /// Wait time for the busy pin to become inactive before a timeout is detected
+    uint8_t             _busyTimeout = RH_SX126x_BUSY_TIMEOUT_DEFAULT;
 
     /// Pin number of the radio NRESET pin, if available, else RH_INVALID_PIN
     uint8_t             _resetPin;

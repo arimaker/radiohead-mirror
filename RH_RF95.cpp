@@ -5,7 +5,7 @@
 
 #include <RH_RF95.h>
 
-// Maybe a mutex for multithreading on Raspberry Pi?
+// Mutex for multithreading on a multi-core Raspberry Pi
 #ifdef RH_USE_MUTEX
 RH_DECLARE_MUTEX(lock);
 #endif
@@ -597,7 +597,7 @@ int RH_RF95::lastSNR()
  void RH_RF95::setSpreadingFactor(uint8_t sf)
  {
    if (sf <= 6) 
-     sf = RH_RF95_SPREADING_FACTOR_64CPS;
+       sf = RH_RF95_SPREADING_FACTOR_64CPS; // This SF is incompatible with explicit headers, see 4.1.1.2
    else if (sf == 7) 
      sf = RH_RF95_SPREADING_FACTOR_128CPS;
    else if (sf == 8) 

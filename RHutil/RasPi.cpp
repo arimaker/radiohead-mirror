@@ -110,7 +110,16 @@ void delay (unsigned long ms)
   //Implement Delay function
   struct timespec ts;
   ts.tv_sec=0;
-  ts.tv_nsec=(ms * 1000);
+  ts.tv_nsec=(ms * 1000000);
+  nanosleep(&ts,&ts);
+}
+
+void delayMicroseconds (unsigned long us)
+{
+  //Implement Delay function
+  struct timespec ts;
+  ts.tv_sec=0;
+  ts.tv_nsec=(us * 1000);
   nanosleep(&ts,&ts);
 }
 

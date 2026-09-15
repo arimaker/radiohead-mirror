@@ -55,8 +55,14 @@ void SPIClass::begin(uint16_t divider, uint8_t bitOrder, uint8_t dataMode)
   uint32_t spiFlags = 0; //Zero is a good default start.
   //on pigpio, the least sig 2 bits set datamode, which will probably be zero. 
   spiFlags = 0x00000000 | (uint32_t) dataMode;
+
+  // Tell pigpio not to configure the hardware SPI chip-select GPIOs.
+  spiFlags |= (1 << 5); // Reserve CE0 (GPIO8) 
+  spiFlags |= (1 << 6); // Reserve CE1 (GPIO7)
+  spiFlags |= (1 << 7); // Reserve third CS position (generic pigpio slot) 
+
   //According to documentation, bitOrder for SPI MAIN in pigpio is always MSBFIRST. So bitOrder ignored.
-  printf("\nSPI Settings:\nBaud rate=%d\nFlags=%d\n\n", spiBaud, spiFlags);
+  printf("\nSPI Settings:\nBaud rate=%d\nFlags=0x%X\n\n", spiBaud, spiFlags);
   spiHandle = spiOpen(0, spiBaud, spiFlags); //spiChannel assumed to be zero.
 
   //Initialize a timestamp for millis calculation
@@ -169,7 +175,16 @@ void delay (unsigned long ms)
   //Implement Delay function
   struct timespec ts;
   ts.tv_sec=0;
-  ts.tv_nsec=(ms * 1000);
+  ts.tv_nsec=(ms * 1000000);
+  nanosleep(&ts,&ts);
+}
+
+void delayMicroseconds (unsigned long us)
+{
+  //Implement Delay function
+  struct timespec ts;
+  ts.tv_sec=0;
+  ts.tv_nsec=(us * 1000);
   nanosleep(&ts,&ts);
 }
 
@@ -201,7 +216,7 @@ void attachInterrupt(unsigned char pin, void (*handler)(void), int mode)
         default:
             break;
     }
-}
+} 
 
 void SerialSimulator::begin(int baud)
 {

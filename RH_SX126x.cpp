@@ -9,7 +9,7 @@
 
 #include <RH_SX126x.h>
 
-// Maybe a mutex for multithreading on Raspberry Pi?
+// Mutex for multithreading on a multi-core Raspberry Pi
 #ifdef RH_USE_MUTEX
 RH_DECLARE_MUTEX(lock);
 #endif
@@ -56,10 +56,13 @@ RH_SX126x::RH_SX126x(uint8_t slaveSelectPin, uint8_t interruptPin,  uint8_t busy
     setRadioPinConfig(radioPinConfig);
 }
 
-bool RH_SX126x::init()
+bool RH_SX126x::init(bool hw_reset)
 {
-    if (!RHSPIDriver::init())
-	return false;
+    if (hw_reset)
+    {
+        if (!RHSPIDriver::init())
+	        return false;
+    }
 
 #ifdef RH_USE_MUTEX
     if (RH_MUTEX_INIT(lock) != 0)
@@ -72,8 +75,12 @@ bool RH_SX126x::init()
     if (!setupInterruptHandler())
 	return false;
 
+    // Configure the BUSY pin if available before reset
+    if (_busyPin != RH_INVALID_PIN)
+	pinMode(_busyPin, INPUT);
+
     // Reset the radio, if we know the reset pin:
-    if (_resetPin != RH_INVALID_PIN)
+    if ((hw_reset == true) && (_resetPin != RH_INVALID_PIN))
     {
 	pinMode(_resetPin, OUTPUT);
 	digitalWrite(_resetPin, HIGH);
@@ -83,10 +90,6 @@ bool RH_SX126x::init()
 	// Expect to be busy for about 1ms after this
 	delay(200); // After reset: else can get runt transmission during startup
     }
-
-    // Configure the BUSY pin if available
-    if (_busyPin != RH_INVALID_PIN)
-	pinMode(_busyPin, INPUT);
 
     // No way to check the device type :-(
     // Can read data like 'SX1261 TKF 1A11', at register 0x0320 RH_SX126x_REG_VERSION_STRING but it does not change for SX1261
@@ -549,19 +552,19 @@ bool RH_SX126x::waitUntilNotBusy()
 {
     uint8_t busy_timeout_cnt = 0;
     if (_busyPin == RH_INVALID_PIN)
-	return false;
-    
+	    return false;
+
     while (digitalRead(_busyPin))
     {
-	delay(1);
-	busy_timeout_cnt++;
+	    delayMicroseconds(1);
+	    busy_timeout_cnt++;
 
-	// Need to wait up to 150us when in sleep mode, see table 8-1
-	if (busy_timeout_cnt > 10) // Should be configurable
-	{
-	    Serial.println("ERROR: waitUntilNotBusy TIMEOUT");
-	    return false;
-	}
+	    // Need to wait up to 150us when in sleep mode, see table 8-1
+	    if (busy_timeout_cnt > _busyTimeout)
+	    {
+	        Serial.println("ERROR: waitUntilNotBusy TIMEOUT");
+	        return false;
+	    }
     }
     return true; // OK
 }
@@ -1030,6 +1033,11 @@ bool RH_SX126x::setTCXO(float voltage, uint32_t delay)
 
     uint32_t delayValue = (float)delay / 15.625;
     return setDIO3AsTcxoCtrl(voltageValue, delayValue);
+}
+
+void RH_SX126x::setBusyTimeout(uint8_t timeout)
+{
+    _busyTimeout = timeout;
 }
 
 bool RH_SX126x::setPacketParams(uint8_t p1, uint8_t p2, uint8_t p3, uint8_t p4, uint8_t p5, uint8_t p6, uint8_t p7, uint8_t p8, uint8_t p9)

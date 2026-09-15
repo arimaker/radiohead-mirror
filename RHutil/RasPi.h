@@ -68,7 +68,9 @@ void digitalWrite(unsigned char pin, unsigned char value);
 
 unsigned long millis();
 
-void delay (unsigned long delay);
+void delay (unsigned long ms);
+
+void delayMicroseconds (unsigned long us);
 
 long random(long min, long max);
 

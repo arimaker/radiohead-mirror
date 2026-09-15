@@ -32,8 +32,8 @@ void setup()
   
   // Manually define the routes for this network
   manager.addRouteTo(SERVER1_ADDRESS, SERVER1_ADDRESS);  
-  manager.addRouteTo(SERVER2_ADDRESS, SERVER2_ADDRESS);
-  manager.addRouteTo(SERVER3_ADDRESS, SERVER3_ADDRESS);
+  manager.addRouteTo(SERVER2_ADDRESS, SERVER1_ADDRESS);
+  manager.addRouteTo(SERVER3_ADDRESS, SERVER1_ADDRESS);
 }
 
 uint8_t data[] = "Hello World!";

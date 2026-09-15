@@ -12,7 +12,7 @@ via a variety of common data radios and other transports on a range of embedded 
 \par Download
 
 The version of the package that this documentation refers to can be downloaded 
-from https://www.airspayce.com/mikem/arduino/RadioHead/RadioHead-1.145.zip
+from https://www.airspayce.com/mikem/arduino/RadioHead/RadioHead-1.146.zip
 
 You can always find the latest version of this documentation at
 https://www.airspayce.com/mikem/arduino/RadioHead
@@ -1327,6 +1327,11 @@ k             Fix SPI bus speed errors on 8MHz Arduinos.
 
 \version 1.145 2026-01-05
              Fixed a bug in RH_SX126x driver where receipt of an invalid message would prevent further messages being received.<br>
+
+\version 1.146 2026-09-15
+             Fixed misleading routing tables in rf22_router_* examples
+	     Added patch for extension supporting the SX126x 
+	     with a raspberry. Developed and tested it on a raspberrypi3. Contributed by tilman.
 	     
 \author  Mike McCauley. DO NOT CONTACT THE AUTHOR DIRECTLY. USE THE GOOGLE GROUP GIVEN ABOVE
 */
@@ -1575,7 +1580,7 @@ these examples and explanations and extend them to suit your needs.
 
 // Official version numbers are maintained automatically by Makefile:
 #define RH_VERSION_MAJOR 1
-#define RH_VERSION_MINOR 145
+#define RH_VERSION_MINOR 146
 
 // Symbolic names for currently supported platform types
 #define RH_PLATFORM_ARDUINO          1

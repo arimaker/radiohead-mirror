@@ -235,7 +235,6 @@ uint8_t RHRouter::route(RoutedMessage* message, uint8_t messageLen)
 	}
 	next_hop = route->next_hop;
     }
-
     if (!RHReliableDatagram::sendtoWait((uint8_t*)message, messageLen, next_hop))
     {
 	return RH_ROUTER_ERROR_UNABLE_TO_DELIVER;
