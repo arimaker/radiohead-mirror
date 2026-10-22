@@ -131,7 +131,7 @@ bool RH_RF95::setupInterruptHandler()
 	{
 	    static uint8_t interruptCount = 0; // Index into _deviceForInterrupt for next device
 	    // First run, no interrupt allocated yet
-	    if (interruptCount <= RH_RF95_NUM_INTERRUPTS)
+	    if (interruptCount < RH_RF95_NUM_INTERRUPTS)
 		_myInterruptIndex = interruptCount++;
 	    else
 		return false; // Too many devices, not enough interrupt vectors

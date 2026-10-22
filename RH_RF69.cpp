@@ -135,7 +135,7 @@ bool RH_RF69::init()
     if (_myInterruptIndex == 0xff)
     {
 	// First run, no interrupt allocated yet
-	if (_interruptCount <= RH_RF69_NUM_INTERRUPTS)
+	if (_interruptCount < RH_RF69_NUM_INTERRUPTS)
 	    _myInterruptIndex = _interruptCount++;
 	else
 	    return false; // Too many devices, not enough interrupt vectors

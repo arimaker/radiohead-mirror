@@ -112,7 +112,7 @@ bool RH_CC110::init()
     if (_myInterruptIndex == 0xff)
     {
 	// First run, no interrupt allocated yet
-	if (_interruptCount <= RH_CC110_NUM_INTERRUPTS)
+	if (_interruptCount < RH_CC110_NUM_INTERRUPTS)
 	    _myInterruptIndex = _interruptCount++;
 	else
 	    return false; // Too many devices, not enough interrupt vectors
